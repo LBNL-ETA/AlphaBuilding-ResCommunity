@@ -63,13 +63,13 @@ Input parameters to set up the environment are as follows:
 | hvacMode             | Heating or cooling or both                                             | String   |               |
 | tsp                  | Indoor temperature set point, mean and std                             | tuple    |               |
 | trange               | Acceptable temperature range, mean and std                             | tuple    |               |
-| costWeight           | Weight between comfort and energy to calculate reward                  | tuple    |               |
+| costWeight           | Weight between comfort and energy to calculate reward                  | tuple    | (10, 1)       |
 | rcRatio              | R to C ratio, mean and std                                             | tuple    | (0.7, 0.4)    |
 | copH                 | Heating COP, mean and std                                              | tuple    | (2.5,0.5)     | 
 | copC                 | Cooling COP, mean and std                                              | tuple    | (2.5,0.5)     |
 | teqHQ                | Equivalent temperature of heating, mean and std                        | tuple    | (50,10)       |
 | teqCQ                | Equivalent temperature of cooling, mean and std                        | tuple    | (-50,10)      |
-| x0                   | Initial temperature, mean and std                                      | tuple    |               |
+| x0                   | Initial temperature, mean and std                                      | tuple    |Uniform between lower and upper comfort bound|
 | otherHGMethod        | Method to calculate other heat gains                                   | string   | 'Eocbee'      |
 | internalHeatGainRatio| Percentage of internal heat gain of total other heat gain, mean and std| tuple    | (0.3, 0.1)    |
 | noiseSigma           | standard deviation of model noise                                      | float    | 0.03          |

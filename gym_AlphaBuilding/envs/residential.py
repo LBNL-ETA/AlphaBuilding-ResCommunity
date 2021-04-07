@@ -61,7 +61,7 @@ class AlphaResEnv(gym.Env):
 
     def __init__(self, sampleSize, stepSize, simHorizon,
         ambientWeather, ttc, teq, 
-        hvacMode, tsp, trange, costWeight, otherHGMethod='Eocbee',
+        hvacMode, tsp, trange, costWeight=(10, 1), otherHGMethod='Eocbee',
         rcRatio=(0.7, 0.4),
         x0 = None,
         copH=(2.5,0.5), copC=(2.5,0.5), teqHQ=(50,10), teqCQ=(-50,10),

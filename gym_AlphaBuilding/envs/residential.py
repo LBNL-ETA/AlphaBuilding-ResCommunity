@@ -37,7 +37,7 @@ class AlphaResEnv(gym.Env):
     - teqCQ: tuple, (teq_c_mean, teq_c_sigma), mean and standard deviation of equivalent temperature of cooling capacity, unit: degC
     - x0: tuple, (x0_mean, x0_sigma), mean and standard deviation of initial temperature, unit: degC
         if x0 is None, then the initial temperature is a random sampling from the uniform distribution between T_low and T_high
-    - otherHGMethod: str, the method to calculate other heat gains, 'DOE' and 'Ecobee' are supported
+    - internalHGMethod: str, the method to calculate internal heat gains, 'DOE' and 'Ecobee' are supported
         'DOE': Use occupancy, lighting, and plug load schedule of DOE Reference Models, does not differentiate weekends and weekdays
         'Ecobee': Use the schedule inferred from Ecobee database, two clusters of occupancy are identified, different for weekends and weekdays 
     - internalHeatGainRatio: tuple, (internal_heat_gain_ratio_mean, internal_heat_gain_ratio_sigma), percentage of internal heat gain
@@ -61,7 +61,7 @@ class AlphaResEnv(gym.Env):
 
     def __init__(self, sampleSize, stepSize, simHorizon,
         ambientWeather, ttc, teq, 
-        hvacMode, tsp, trange, costWeight=(10, 1), otherHGMethod='Eocbee',
+        hvacMode, tsp, trange, costWeight=(10, 1), internalHGMethod='Eocbee',
         rcRatio=(0.7, 0.4),
         x0 = None,
         copH=(2.5,0.5), copC=(2.5,0.5), teqHQ=(50,10), teqCQ=(-50,10),
@@ -70,7 +70,7 @@ class AlphaResEnv(gym.Env):
 
         assert hvacMode in ['heating only', 'cooling only', 'heating and cooling'], \
             "HVAC Mode of {} is not supported. Please input 'heating only', 'cooling only' or 'heating and cooling'".format(hvac_model)
-        assert otherHGMethod in ['DOE', 'Ecobee'], \
+        assert internalHGMethod in ['DOE', 'Ecobee'], \
             "Other heat gain method of {} is not supported. Please input 'DOE', or 'Ecobee'".format(hvac_model)
 
         self.sample_size = sampleSize
@@ -78,7 +78,7 @@ class AlphaResEnv(gym.Env):
         self.sim_horizon = simHorizon
         self.ambient_weather = ambientWeather
         self.ttc = ttc                       # R*C
-        self.r_c_ratio = rcRatio           # R/C
+        self.r_c_ratio = rcRatio             # R/C
         self.hvac_mode = hvacMode
         self.cop_h = copH
         self.cop_c = copC
@@ -88,7 +88,7 @@ class AlphaResEnv(gym.Env):
         self.tsp = tsp
         self.trange = trange
         self.teq = teq
-        self.otherHG_method = otherHGMethod
+        self.internalHG_method = internalHGMethod
         self.noise_sigma = noiseSigma
         self.measurement_error_sigma = measurementErrorSigma
         self.cost_weight = costWeight
@@ -170,7 +170,7 @@ class AlphaResEnv(gym.Env):
         self.obs[-self.sample_size:] = self.X_0
         # Calculate other heat gains
         dayOfWeek = self.t_index[self.time_step_idx].dayofweek
-        self.Teq_int = self._calc_internal_heat_gain(self.otherHG_method, dayOfWeek)
+        self.Teq_int = self._calc_internal_heat_gain(self.internalHG_method, dayOfWeek)
         self.Teq_sol_sunny = self._calc_solar_heat_gain()  # cloud coverage not considered
 
         return self.obs
@@ -184,10 +184,10 @@ class AlphaResEnv(gym.Env):
 
         # If heat gain method is 'Ecobee', resample to determine the cluster type.
         # Update internal heat gain at the begining of each day
-        if self.otherHG_method == 'Ecobee':
+        if self.internalHG_method == 'Ecobee':
            if self.time_step_idx%(24*60/self.step_size) == 0:
                 dayOfWeek = self.t_index[self.time_step_idx].dayofweek
-                self.Teq_int = self._calc_internal_heat_gain(self.otherHG_method, dayOfWeek)
+                self.Teq_int = self._calc_internal_heat_gain(self.internalHG_method, dayOfWeek)
 
         self.time_step_idx += 1
         # Update states: ambient and indoor temperatures

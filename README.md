@@ -17,7 +17,7 @@ Compared with existing efforts, *AlphaBuilding ResCommunity* has the following t
 - More realistic, because: a. the mdoel parameter values are inferred from a database recording the building operational data of more than 80,000 households in the Unite States; b. we consider occupancy schedule and other heat gains that have been ignored in existing studies.
 - Simple software dependence and easy to use. *AlphaBuilding ResCommunity* is wrapped up using the standardize OpenAI Gym enivorenment, that is widely used in the Reinforcement Learning community.
 
-<img src="docs/fig/architecture.png" data-canonical-src="docs/fig/architecture.png" width="1000" />
+<img src="docs/fig/archi.png" data-canonical-src="docs/fig/archi.png" width="1000" />
 
 
 # Code Usage
@@ -48,19 +48,22 @@ conda activate alpBuiResCom
 ``results``: Generated figures and tables
 
 
-### Running
-Input parameters to set up the environment are as follows:
+### Interface
+The co-simulation workflow between the environment and the controller is:
 
+<img src="docs/fig/interface.png" data-canonical-src="docs/fig/interface.png" width="500" />
+
+The first step is to initiate the environment. A list of input parameters to set up the environment is shown as follows:
 
 | Input Parameter      | Description                                                            | Data Type| Default Value |
 |----------------------|------------------------------------------------------------------------|----------|---------------|
 | sampleSize           | Number of residential buildings to be simulated                        | int      |               |
 | stepSize             | Step size of simulation, unit: [min]                                   | int      |               |
 | simHorizon           | Start and final date of simulation                                     | tuple    |               |
-| ambientWeather       | Ambient weather data of ambient temperature and cloud cover (optional) | Dataframe|               |
+| ambientWeather       | Ambient weather data of ambient temperature and cloud cover (optional) | dataframe|               |
 | ttc                  | Thermal Time Constant, mean and std                                    | tuple    |               |
 | teq                  | Equivalent temperature increase due to other heat gains, mean and std  | tuple    |               |
-| hvacMode             | Heating or cooling or both                                             | String   |               |
+| hvacMode             | Heating or cooling or both                                             | string   |               |
 | tsp                  | Indoor temperature set point, mean and std                             | tuple    |               |
 | trange               | Acceptable temperature range, mean and std                             | tuple    |               |
 | costWeight           | Weight between comfort and energy to calculate reward                  | tuple    | (10, 1)       |
@@ -75,8 +78,22 @@ Input parameters to set up the environment are as follows:
 | noiseSigma           | standard deviation of model noise                                      | float    | 0.03          |
 | measurementErrorSigma| standard deviation of measurement error, unit [degC]                   | float    | 0.5           |
 
+At each time step, the controller select the action ``acts`` based on the states ``obs``. Then ``acts`` are input to the environment, ``obs`` and ``comments`` are returned. The contents of ``acts``, ``obs``, and ``comments`` are shown as follows:
+
+<img src="docs/fig/variables.png" data-canonical-src="docs/fig/variables.png" width="500" />
+
+A list of methods provided by the environment is as follows:
+
+| Methods            | Example                       | Input          | Returns                                       |
+|--------------------|-------------------------------|----------------|-----------------------------------------------|
+| Initiate the env   | ``env=AlphaResEnv(*args)``    | Env parameters | An environment instance                       |
+| Reset the env      | ``obs=env.reset()``           | \              | Observations (Initial conditions)             |
+| One step simulation| ``obs,r,d,c=env.step(acts)``  | Control actions| New observations, reward, done flag, comments |
+| Get env parameters | ``pars = env.getParameter()`` | \              | Environment parameters                        |
 
 
+
+### Running
 <!--
 You can replicate our experiments, generate figures and tables used in the manuscript using the Jupyter notebooks saved in ``bin``: `section3.1 EDA.ipynb`, `section3.2 linear model.ipynb`, `section3.3 time-series model.ipynb`, `section3.4 tabular data model.ipynb`, `section4.1 model comparison.ipynb`, `section4.2 heat wave.ipynb`, `section4.3 convid.ipynb`
 -->

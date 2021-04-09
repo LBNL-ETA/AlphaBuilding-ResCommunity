@@ -5,6 +5,7 @@ from gym_AlphaBuilding.envs.other_heat_gain import get_intHG_schd, get_solarHG_s
 
 import pandas as pd
 import numpy as np
+from datetime import timedelta
 
 class AlphaResEnv(gym.Env):
     """ AlphaResEnv is a custom Gym Environment 
@@ -13,7 +14,7 @@ class AlphaResEnv(gym.Env):
     - stepSize: int, step size of simulation, unit: minute, example - 15
     - simHorizon: tuple, (start_date, final_date), start and final date of simulation, 
         example - ('2020-07-01', '2020-08-01')
-    - ambientWeather: pandas.dataframe, need to correspond to simulation horizon and step size, have two columns
+    - ambientWeather: pandas.dataframe, the time index needs to match with simulation horizon and step size, have two columns
         Temperature: ambient temperature, unit: degC
         CloudCoverage: cloud cover, optional
     - ttc: tuple, (ttc_mean, ttc_sigma), mean and standard deviation of thermal time constant, unit: h, example - (10.0, 5.0)
@@ -61,7 +62,7 @@ class AlphaResEnv(gym.Env):
 
     def __init__(self, sampleSize, stepSize, simHorizon,
         ambientWeather, ttc, teq, 
-        hvacMode, tsp, trange, costWeight=(10, 1), internalHGMethod='Eocbee',
+        hvacMode, tsp, trange, costWeight=(10, 1), internalHGMethod='Ecobee',
         rcRatio=(0.7, 0.4),
         x0 = None,
         copH=(2.5,0.5), copC=(2.5,0.5), teqHQ=(50,10), teqCQ=(-50,10),
@@ -69,9 +70,9 @@ class AlphaResEnv(gym.Env):
         ):
 
         assert hvacMode in ['heating only', 'cooling only', 'heating and cooling'], \
-            "HVAC Mode of {} is not supported. Please input 'heating only', 'cooling only' or 'heating and cooling'".format(hvac_model)
+            "HVAC Mode of {} is not supported. Please input 'heating only', 'cooling only' or 'heating and cooling'".format(hvacMode)
         assert internalHGMethod in ['DOE', 'Ecobee'], \
-            "Other heat gain method of {} is not supported. Please input 'DOE', or 'Ecobee'".format(hvac_model)
+            "Internal heat gain method of {} is not supported. Please input 'DOE', or 'Ecobee'".format(internalHGMethod)
 
         self.sample_size = sampleSize
         self.step_size = stepSize
@@ -102,8 +103,8 @@ class AlphaResEnv(gym.Env):
                                      freq='{}T'.format(self.step_size))
         self.n_steps = len(self.t_index)
 
-        assert self.n_steps==len(self.ambient_weather), \
-            'Number of entries for ambient temperature is different from the number of timesteps'
+        assert self.n_steps+int(24*60/(self.step_size)) == len(self.ambient_weather), \
+            'Number of entries for ambient temperature needs to equal to the number of timesteps plus one day'
 
         if 'Temperature' in self.ambient_weather.columns:
             self.x_amb = self.ambient_weather['Temperature']
@@ -139,8 +140,8 @@ class AlphaResEnv(gym.Env):
             self.X_0 = np.random.uniform(self.T_low, self.T_high)
         self.Internal_heat_gain_ratio = np.random.normal(*self.internal_heat_gain_ratio, self.sample_size).clip(0.1,)
 
-        self.R = (self.Ttc*self.R_c_ratio)**0.5
-        self.C = self.Ttc/self.R
+        self.R = (self.Ttc*self.R_c_ratio)**0.5   # Unit: degC/kW
+        self.C = self.Ttc/self.R                  # Unit: kWh/degC
         self.Q_h = self.Teq_h_q/self.R
         self.Q_c = self.Teq_c_q/self.R    # should be negative
 
@@ -208,7 +209,7 @@ class AlphaResEnv(gym.Env):
                                         'intHG': self.intHG, 'solHG': self.solHG, 
                                         'noise': self.model_noise, 'error': self.mea_error}
     
-    def getParameter(self):
+    def getParameters(self):
         '''
         Return a dataframe with parameter values of the environment.
         Each row is a sample of the households
@@ -241,6 +242,26 @@ class AlphaResEnv(gym.Env):
     def get_solarHG_schd(self):
         return self.solHG_schd
 
+    def otherHGForecast(self):
+        '''Hourly prediction of other heat gains (solar + internal) of the next 24 hours
+        Assumption
+            - internal heat gain of tomorrow is the same as today
+            - cloud cover would always be 90%
+        '''
+        otherHG = self.Teq_int + self.Teq_sol_sunny*0.9
+        otherHG = np.concatenate((otherHG, otherHG), axis=1) # 24 hours forecast extend to the next day
+        hour_current = self.t_index[self.time_step_idx].hour
+        otherHG_forecast = otherHG[:,hour_current:hour_current+24]
+        return otherHG_forecast
+
+    def weatherForecast(self):
+        '''Hourly weather forecast of the next 24 hours
+        '''
+        weather_fore = self.ambient_weather[self.t_index[self.time_step_idx]:
+                                            self.t_index[self.time_step_idx]+timedelta(days=1)]
+        weather_fore_hourly = weather_fore.resample('H').mean()
+        return weather_fore_hourly
+
     def _take_action(self):
         # Sample the noise
         self.model_noise = np.random.normal(0, self.noise_sigma*(self.step_size*60)**0.5, self.sample_size)
@@ -256,7 +277,7 @@ class AlphaResEnv(gym.Env):
         self.mea_error = np.random.normal(0, self.measurement_error_sigma, self.sample_size)
 
         self.obs[-self.sample_size:] = self.A*temp_zones + (1-self.A)*(temp_amb + self.intHG + self.solHG + self.model_noise + \
-            self.R*self.Q_input)  + self.mea_error
+            self.R*self.Q_input) + self.mea_error
 
     def _calc_internal_heat_gain(self, method, day_of_week):
         '''Calculate the internal heat gain for the whole day

@@ -41,9 +41,11 @@ conda activate alpBuiResCom
 
 ``bin\util``: Utility functions and data, including the distribution of inferred parameters of TCLs for each state, comfortable range, occupancy schedule, and ADMM algorithm
 
-``gym_AlphaBuilding``: Code to develop the OpenAI Gym environment of AlphaBuilding
+``data``: Raw data used in this repo, including 
 
 ``docs``: Manuscript submitted version, and documentation of this environment
+
+``gym_AlphaBuilding``: Code to develop the OpenAI Gym environment of AlphaBuilding
 
 ``results``: Generated figures and tables
 
@@ -51,7 +53,7 @@ conda activate alpBuiResCom
 ### Interface
 The co-simulation workflow between the environment and the controller is:
 
-<img src="docs/fig/interface.png" data-canonical-src="docs/fig/interface.png" width="500" />
+<img src="docs/fig/interface.png" data-canonical-src="docs/fig/interface.png" width="800" />
 
 The first step is to initiate the environment. A list of input parameters to set up the environment is shown as follows:
 
@@ -80,17 +82,18 @@ The first step is to initiate the environment. A list of input parameters to set
 
 At each time step, the controller select the action ``acts`` based on the states ``obs``. Then ``acts`` are input to the environment, ``obs`` and ``comments`` are returned. The contents of ``acts``, ``obs``, and ``comments`` are shown as follows:
 
-<img src="docs/fig/variables.png" data-canonical-src="docs/fig/variables.png" width="500" />
+<img src="docs/fig/variables.png" data-canonical-src="docs/fig/variables.png" width="700" />
 
 A list of methods provided by the environment is as follows:
 
-| Methods            | Example                       | Input          | Returns                                       |
-|--------------------|-------------------------------|----------------|-----------------------------------------------|
-| Initiate the env   | ``env=AlphaResEnv(*args)``    | Env parameters | An environment instance                       |
-| Reset the env      | ``obs=env.reset()``           | \              | Observations (Initial conditions)             |
-| One step simulation| ``obs,r,d,c=env.step(acts)``  | Control actions| New observations, reward, done flag, comments |
-| Get env parameters | ``pars = env.getParameter()`` | \              | Environment parameters                        |
-
+| Methods                  | Example                          | Input          | Returns                                       |
+|--------------------------|----------------------------------|----------------|-----------------------------------------------|
+| Initiate the env         | ``env=AlphaResEnv(*args)``       | Env parameters | An environment instance                       |
+| Reset the env            | ``obs=env.reset()``              | \              | Observations (Initial conditions)             |
+| One step simulation      | ``obs,r,d,c=env.step(acts)``     | Control actions| New observations, reward, done flag, comments |
+| Get env parameters       | ``pars = env.getParameters()``   | \              | Environment parameters                        |
+| Weather forecast         | ``pars = env.weatherForecast()`` | \              | Hourly weather forecast of the next 24 hours  |
+| Other Heat Gain forecast | ``fore = env.otherHGForecast()`` | \              | Hourly prediction of other heat gains (solar + internal) of the next 24 hours |
 
 
 ### Running

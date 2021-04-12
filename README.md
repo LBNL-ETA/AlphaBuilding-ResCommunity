@@ -17,7 +17,7 @@ Compared with existing efforts, *AlphaBuilding ResCommunity* has the following t
 - More realistic, because: a. the mdoel parameter values are inferred from a database recording the building operational data of more than 80,000 households in the Unite States; b. we consider occupancy schedule and other heat gains that have been ignored in existing studies.
 - Simple software dependence and easy to use. *AlphaBuilding ResCommunity* is wrapped up using the standardize OpenAI Gym enivorenment, that is widely used in the Reinforcement Learning community.
 
-<img src="docs/fig/archi.png" data-canonical-src="docs/fig/archi.png" width="1000" />
+<img src="docs/fig/archi.png" width="1000" />
 
 
 # Code Usage
@@ -57,7 +57,7 @@ You can replicate our experiments, generate figures and tables used in the manus
 # Interface
 The co-simulation workflow between the environment and the controller is:
 
-<img src="docs/fig/interface.png" data-canonical-src="docs/fig/interface.png" width="800" />
+<img src="docs/fig/interface.png" width="800" />
 
 The first step is to initiate the environment. A list of input parameters to set up the environment is shown as follows:
 
@@ -84,9 +84,9 @@ The first step is to initiate the environment. A list of input parameters to set
 | noiseSigma           | standard deviation of model noise                                      | float    | 0.03          |
 | measurementErrorSigma| standard deviation of measurement error, unit [degC]                   | float    | 0.5           |
 
-At each time step, the controller select the action ``acts`` based on the states ``obs``. Then ``acts`` are input to the environment, ``obs`` and ``comments`` are returned. The contents of ``acts``, ``obs``, and ``comments`` are shown as follows:
+Then at each time step, the environment consumes ``acts`` (determined by the controller), runs a single time step simulation, and returns ``obs`` and ``comments``. The contents of ``acts``, ``obs``, and ``comments`` are shown as follows:
 
-<img src="docs/fig/variables.png" data-canonical-src="docs/fig/variables.png" width="700" />
+<img src="docs/fig/variables.png" width="700" />
 
 A list of methods provided by the environment is as follows:
 
@@ -104,12 +104,12 @@ A list of methods provided by the environment is as follows:
 ``AlphaBuilding ResCommunity`` can be used to train TCL controllers. As an example, we demonstrate four applications here:
 
 ### Kalman Filter
-Kalman Filter is a technique to integrate the physical model and unaccurate measurements for more accurate state estimation. We implement a Kalman Filter in ``bin\Section4.1 Kalman_filter.ipynb`` and here is the result:
+Kalman Filter is a technique to integrate the physical model and unaccurate measurements for more accurate state estimation. We implement a Kalman Filter using Python Library ``pykalman`` in ``bin\Section4.1 Kalman_filter.ipynb`` and here is the result:
 
-<img src="docs/fig/Kalman Filter.png" data-canonical-src="docs/fig/Kalman Filter.png" width="800" />
+<img src="docs/fig/Kalman Filter.png" width="800" />
 
 ### MPC for single TCL
-Though ``AlphaBuilding ResCommunity`` is designed majorly for TCL coordination, it can also be used to train controller for single TCL using either Model Predictive Control or Reinforcement Learning. We implement an MPC controller to reduce costs based on Time-Of-Use utility price in ``bin\Section4.2 Single TCL MPC.ipynb`` and here is the result:
+Though ``AlphaBuilding ResCommunity`` is designed majorly for TCL coordination, it can also be used to train controller for single TCL using either Model Predictive Control or Reinforcement Learning. We implement an MPC controller using Python Library ``casadi`` to reduce costs based on Time-Of-Use utility price in ``bin\Section4.2 Single TCL MPC.ipynb`` and here is the result:
 
 <img src="docs/fig/mpc.png" width="800" />
 
@@ -119,7 +119,7 @@ Priority-Stack-Based Control (PSBC) is a feedback based controller that can be u
 <img src="docs/fig/tracking.png" width="800" />
 
 ### ADMM for 100 TCLs
-Alternating Direction Method of Multipliers (ADMM) is an algorithm that solves convex optimization problems by breaking them into smaller pieces. We implement an ADMM controller in ``bin\Section4.3&4.4 PSBC&ADMM.ipynb`` and here is the result:
+Alternating Direction Method of Multipliers (ADMM) is an algorithm that solves convex optimization problems by breaking them into smaller pieces. We implement an ADMM controller using Python Library ``cvxpy`` in ``bin\Section4.3&4.4 PSBC&ADMM.ipynb`` and here is the result:
 
 <img src="docs/fig/ADMM_tracking.png" width="800" />
 

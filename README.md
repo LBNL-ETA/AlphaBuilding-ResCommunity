@@ -49,8 +49,12 @@ conda activate alpBuiResCom
 
 ``results``: Generated figures and tables
 
+### Running
+<!--
+You can replicate our experiments, generate figures and tables used in the manuscript using the Jupyter notebooks saved in ``bin``: `section3.1 EDA.ipynb`, `section3.2 linear model.ipynb`, `section3.3 time-series model.ipynb`, `section3.4 tabular data model.ipynb`, `section4.1 model comparison.ipynb`, `section4.2 heat wave.ipynb`, `section4.3 convid.ipynb`
+-->
 
-### Interface
+# Interface
 The co-simulation workflow between the environment and the controller is:
 
 <img src="docs/fig/interface.png" data-canonical-src="docs/fig/interface.png" width="800" />
@@ -96,16 +100,34 @@ A list of methods provided by the environment is as follows:
 | Other Heat Gain forecast | ``fore = env.otherHGForecast()`` | \              | Hourly prediction of other heat gains (solar + internal) of the next 24 hours |
 
 
-### Running
-<!--
-You can replicate our experiments, generate figures and tables used in the manuscript using the Jupyter notebooks saved in ``bin``: `section3.1 EDA.ipynb`, `section3.2 linear model.ipynb`, `section3.3 time-series model.ipynb`, `section3.4 tabular data model.ipynb`, `section4.1 model comparison.ipynb`, `section4.2 heat wave.ipynb`, `section4.3 convid.ipynb`
--->
+# Application
+``AlphaBuilding ResCommunity`` can be used to train TCL controllers. As an example, we demonstrate four applications here:
 
-### Feedback
+### Kalman Filter
+Kalman Filter is a technique to integrate the physical model and unaccurate measurements for more accurate state estimation. We implement a Kalman Filter in ``bin\Section4.1 Kalman_filter.ipynb`` and here is the result:
+
+<img src="docs/fig/Kalman Filter.png" data-canonical-src="docs/fig/Kalman Filter.png" width="800" />
+
+### MPC for single TCL
+Though ``AlphaBuilding ResCommunity`` is designed majorly for TCL coordination, it can also be used to train controller for single TCL using either Model Predictive Control or Reinforcement Learning. We implement an MPC controller to reduce costs based on Time-Of-Use utility price in ``bin\Section4.2 Single TCL MPC.ipynb`` and here is the result:
+
+<img src="docs/fig/mpc.png" width="800" />
+
+### PSBC for 1000 TCLs
+Priority-Stack-Based Control (PSBC) is a feedback based controller that can be used to track target load. We implement a PSBC controller in ``bin\Section4.3&4.4 PSBC&ADMM.ipynb`` and here is the result:
+
+<img src="docs/fig/tracking.png" width="800" />
+
+### ADMM for 100 TCLs
+Alternating Direction Method of Multipliers (ADMM) is an algorithm that solves convex optimization problems by breaking them into smaller pieces. We implement an ADMM controller in ``bin\Section4.3&4.4 PSBC&ADMM.ipynb`` and here is the result:
+
+<img src="docs/fig/ADMM_tracking.png" width="800" />
+
+# Feedback
 
 Feel free to send any questions/feedback to: [Zhe Wang](mailto:zwang5@lbl.gov ) or [Tianzhen Hong](mailto:thong@lbl.gov)
 
-### Citation
+# Citation
 
 If you use our code, please cite us as follows:
 

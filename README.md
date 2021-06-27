@@ -96,20 +96,20 @@ A list of methods provided by the environment is as follows:
 | Reset the env            | ``obs=env.reset()``              | \              | Observations (Initial conditions)             |
 | One step simulation      | ``obs,r,d,c=env.step(acts)``     | Control actions| New observations, reward, done flag, comments |
 | Get env parameters       | ``pars = env.getParameters()``   | \              | Environment parameters                        |
-| Weather forecast         | ``pars = env.weatherForecast()`` | \              | Hourly weather forecast of the next 24 hours  |
-| Other Heat Gain forecast | ``fore = env.otherHGForecast()`` | \              | Hourly prediction of other heat gains (solar + internal) of the next 24 hours |
+| Weather forecast         | ``wFore = env.weatherForecast()``| \              | Hourly weather forecast of the next 24 hours  |
+| Other Heat Gain forecast | ``hgFore = env.otherHGForecast()``| \              | Hourly prediction of other heat gains (solar + internal) of the next 24 hours |
 
 
 # Application
 ``AlphaBuilding ResCommunity`` can be used to train TCL controllers. As an example, we demonstrate four applications here:
 
 ### Kalman Filter
-Kalman Filter is a technique to integrate the physical model and unaccurate measurements for more accurate state estimation. We implement a Kalman Filter using Python Library ``pykalman`` in ``bin\Section4.1 Kalman_filter.ipynb`` and here is the result:
+Kalman Filter is a technique to integrate the physical model and inaccurate measurements for more accurate state estimation. We implement a Kalman Filter using Python Library ``pykalman`` in ``bin\Section4.1 Kalman_filter.ipynb`` and here is the result:
 
 <img src="docs/fig/Kalman Filter.png" width="800" />
 
 ### MPC for single TCL
-Though ``AlphaBuilding ResCommunity`` is designed majorly for TCL coordination, it can also be used to train controller for single TCL using either Model Predictive Control or Reinforcement Learning. We implement an MPC controller using Python Library ``casadi`` to reduce costs based on Time-Of-Use utility price in ``bin\Section4.2 Single TCL MPC.ipynb`` and here is the result:
+Though ``AlphaBuilding ResCommunity`` is designed majorly for TCLs coordination, it can also be used to train controller for single TCL using either Model Predictive Control or Reinforcement Learning. We implement an MPC controller using Python Library ``casadi`` to reduce costs based on Time-Of-Use utility price in ``bin\Section4.2 Single TCL MPC.ipynb`` and here is the result:
 
 <img src="docs/fig/mpc.png" width="800" />
 

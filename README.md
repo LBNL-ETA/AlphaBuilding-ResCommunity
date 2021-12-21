@@ -2,11 +2,9 @@
 
 This is the official repository of AlphaBuilding ResCommunity, a multi-agent OpenAI Gym Environment for Thermally Controlled Loads (TCLs) Coordination. An introduction to this environment can be found in the following paper:
 
-> *Zhe Wang, Bingqing Chen, Han Li, Tianzhen Hong. 2021. AlphaBuilding ResCommunity: A Multi-agent ReinforcementLearning Environment for Load Coordination. Submitted to Applied Energy*
+> *Wang, Z., Chen, B., Li, H. and Hong, T., 2021. AlphaBuilding ResCommunity: A multi-agent virtual testbed for community-level load coordination. Advances in Applied Energy, 4, p.100061.*
 
-<!--
-[[slides]](docs/slides.pdf)[[paper]](https://dl.acm.org/doi/10.1145/3408308.3427980)
--->
+[[paper]](https://doi.org/10.1016/j.adapen.2021.100061)
 
 # Overview
 Wind and Solar combined accounts for 9% of total Unite States electricity generation in 2019, and is expected to make up of at least 40% of the generation mix by 2050. Higher renewable penetration requires more efficient demand side management to maintain real time balance of the grid.

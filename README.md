@@ -45,12 +45,8 @@ conda activate alpBuiResCom
 
 ``gym_AlphaBuilding``: Code to develop the OpenAI Gym environment of AlphaBuilding
 
-``results``: Generated figures and tables
-
 ### Running
-<!--
 You can replicate our experiments, generate figures and tables used in the manuscript using the Jupyter notebooks saved in ``bin``: `section3.1 EDA.ipynb`, `section3.2 linear model.ipynb`, `section3.3 time-series model.ipynb`, `section3.4 tabular data model.ipynb`, `section4.1 model comparison.ipynb`, `section4.2 heat wave.ipynb`, `section4.3 convid.ipynb`
--->
 
 # Interface
 The co-simulation workflow between the environment and the controller is:
@@ -129,23 +125,14 @@ Feel free to send any questions/feedback to: [Zhe Wang](mailto:zwang5@lbl.gov ) 
 
 If you use our code, please cite us as follows:
 
-<!--
 ```
-@inproceedings{Chen2020COHORT,
-author = {Chen, Bingqing and Francis, Jonathan and Pritoni, Marco and Kar, Soummya and Berg\'{e}s, Mario},
-title = {COHORT: Coordination of Heterogeneous Thermostatically Controlled Loads for Demand Flexibility},
-year = {2020},
-isbn = {9781450380614},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-url = {https://doi.org/10.1145/3408308.3427980},
-doi = {10.1145/3408308.3427980},
-booktitle = {Proceedings of the 7th ACM International Conference on Systems for Energy-Efficient Buildings, Cities, and Transportation},
-pages = {31–40},
-numpages = {10},
-keywords = {demand response, smart thermostats, TCLs, distributed control},
-location = {Virtual Event, Japan},
-series = {BuildSys '20}
+@article{wang2021alphabuilding,
+  title={AlphaBuilding ResCommunity: A multi-agent virtual testbed for community-level load coordination},
+  author={Wang, Zhe and Chen, Bingqing and Li, Han and Hong, Tianzhen},
+  journal={Advances in Applied Energy},
+  volume={4},
+  pages={100061},
+  year={2021},
+  publisher={Elsevier}
 }
 ```
--->
